@@ -4,15 +4,15 @@ This script allows you to easily toggle blocks of code in your Home Assistant co
 
 ## Installation
 
-1. Download the `toggle_block.sh` script to your Home Assistant configuration directory (e.g., `/config/scripts`).
+1. Download the `toggle_block.sh` script and place it in your Home Assistant configuration directory (e.g., `/config/scripts`).
 
-2. Make the script executable:
+2. Access the terminal and make the script executable:
    
    ```bash
    chmod +x /config/scripts/toggle_block.sh
    ```
    
-4. Add the following to your `configuration.yaml` to make the script available for use in automations:
+3. Add the following to your `configuration.yaml` to make the script available for use in Home Assistant automations:
    
     ```yaml
     shell_command:
@@ -21,6 +21,8 @@ This script allows you to easily toggle blocks of code in your Home Assistant co
    
 4. Restart Home Assistant to apply the changes.
 
+5. Under Developer tools>ACTIONS you will have a new action: `Shell Command: toggle_block`
+
 ## Parameters
 
 The script accepts four parameters in the following order:
@@ -28,9 +30,10 @@ The script accepts four parameters in the following order:
 1. **target_block** (Required): The name of the block you want to toggle. Blocks that need toggling should be surrounded by case-sensitive HTML-like tags.
    - Example: `#<away>` and `#</away>`.
 
-2. **toggle_state** (Required): The desired state of the block, either `on` or `off`.
+2. **toggle_state** (Required): The desired state of the block, either `on`, `off` or `show`.
    - `on` will uncomment the block.
    - `off` will comment the block.
+   - `show` will display the block without making changes.
 
 3. **target_file** (Required): The YAML file where the block is located. If a file name is provided without a path, the script assumes it is in the `/config` directory.
    - Example: `frigate.yaml` will be treated as `/config/frigate.yaml`.
@@ -38,7 +41,8 @@ The script accepts four parameters in the following order:
 4. **backup** (Optional): Specifies whether to create a backup of the file. Accepts:
    - `on` or `backup`: Creates a `.bak` file.
    - `off` or `no_backup`: Skips backup creation.
-   - If not provided, defaults to creating a backup.
+   - Backup creation is skipped for toggle_state `show`
+   - If not provided for toggle_state `on` or `off`, defaults to creating a backup.
 
 ## Usage
 
