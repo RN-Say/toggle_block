@@ -1,6 +1,6 @@
 # Toggle Block Script for Home Assistant
 
-This script allows you to easily toggle blocks of code in your Home Assistant configuration files by surrounding them with HTML-like tags. It is especially useful for enabling or disabling sections of your configuration based on specific conditions, such as the state of a group or device.
+This script allows you to easily toggle blocks of code in your Home Assistant and Linux configuration files by surrounding them with HTML-like tags. It is especially useful for enabling or disabling sections of your configuration based on specific conditions, such as the state of a group or device.
 
 ## Installation
 
