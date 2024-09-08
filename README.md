@@ -15,8 +15,8 @@ This script allows you to easily toggle sections of your Home Assistant and Linu
 3. Add the following to your `configuration.yaml` to make the script available for use in Home Assistant automations:
    
     ```yaml
-    shell_command:
-      toggle_block: /bin/bash /config/scripts/toggle_block.sh
+   shell_command:
+     toggle_block: "/bin/bash /config/scripts/toggle_block.sh '{{ target_block }}' '{{ toggle_state }}' '{{ target_file }}' '{{ backup }}'"
     ```
    
 4. Restart Home Assistant to apply the changes.
@@ -88,7 +88,7 @@ objects:
 3. The block tagged with `<home>` is the opposite, activated only when you're "home". In this case:
    - When home, **`cell phone`** and **`wine glass`** are tracked.
    
-This approach allows you to dynamically adjust tracking and filters based on your location, enhancing both functionality and maintainability without having to manually edit the configuration each time.
+This approach allows you to dynamically adjust tracking, filters, zones, camera settings...(anything you can think of), enhancing both functionality and maintainability without having to manually edit the configuration each time.
 
 ## Usage
 
@@ -112,19 +112,65 @@ You can use the script directly from the terminal by passing the parameters in t
    ```bash
    /bin/bash /config/scripts/toggle_block.sh "away" "on" "frigate.yaml" "backup"
    ```
+### From Home Assistant Developer Tools
+
+1. **Navigate to Developer Tools**:
+   - In Home Assistant, go to the **Developer Tools** section in the left-hand sidebar.
+
+2. **Select the ACTIONS Tab**:
+   - Click on the **ACTIONS** tab.
+   - Look for the entry called:
+     
+     ```yaml
+     Shell Command: toggle_block
+     ```
+     
+3. **Switch to YAML Mode**:
+   - Click the **GO TO YAML MODE** button to switch from the default interface.
+
+4. **Fill in the Parameters**:
+   - Paste the following code into the YAML editor and replace values as needed:
+     
+      ```yaml
+     data:
+       target_block: home
+       toggle_state: "off"
+       target_file: frigate.yaml
+       backup: "on"
+      ```
+
+5. **Perform the Action**:
+   - Once you’ve filled in the YAML, click the **PERFORM ACTION** button at the bottom of the page to run the command.
+
+6. **View the Response**:
+   - After executing the action, you will receive a response similar to this:
+
+      ```yaml
+     stdout: |-
+       Backup created: /config/frigate.yaml.bak
+       The block 'home' has been commented.
+              #<home>
+              # - cell phone
+              # - wine glass
+              #</home>
+     stderr: ""
+     returncode: 0
+      ```
 
 ### From Home Assistant Automations
 
 You can easily integrate this script into Home Assistant automations. Here's an example that toggles a block in `frigate.yaml` based on whether the Residents group is home or away:
 
 ```yaml
-alias: Frigate toggle_block
-description: "Toggle configuration settings in frigate.yaml based on the state of the Residents group"
+alias: Frigate Toggle Block Home Away
+description: >-
+  Toggles the home and away blocks of the frigate.yaml configuration file based
+  on the state of group.residents
 trigger:
   - platform: state
     entity_id:
       - group.residents
-    to: Away
+    to: away
     id: Residents Away
   - platform: state
     entity_id:
@@ -139,6 +185,12 @@ action:
             id:
               - Residents Away
         sequence:
+          - action: shell_command.toggle_block
+            data:
+              target_block: home
+              toggle_state: "off"
+              target_file: frigate.yaml
+              backup: "on"
           - action: shell_command.toggle_block
             data:
               target_block: away
@@ -196,11 +248,12 @@ You can add comments within blocks that will be preserved regardless of the togg
 ### Important Notes
 
 - **Case Sensitivity**: The block markers are case-sensitive. For example, `#<away>` is not the same as `#<Away>`.
-- **Spacing Requirement**: The script requires a space after the `#` for it to properly toggle comments. If the space is missing (`#-person`), the script will not uncomment the line.
+- **Spacing Requirement**: The script requires a space after the `#` for it to properly toggle comments. If the space is missing (`#-person`), the script will not uncomment the line. Additionally, no spaces are allowed after the tag.
 - **No nesting**: Tags within tags are not supported. They will be treated as hard comments and will not be toggled. Create a separate toggle block for each tag.
 - **Testing**: It is recommended to copy your target file to a temporary file for testing, 'test.yaml', for example. Always use `show` to verify that your tags and toggle block are being correctly identified before toggling `on`.
 - **Multiplicity**: You can use the same tags in multiple places within a file to keep code maintenance simple. You can use multiple different tags in a file and they can be toggled independently.
 - **Backups**: Remember to switch backup to `off` or `no_backup` once you have completed testing and remove any test or .bak files that you no longer need.
+- **Last Resort**: This script should be used as a last resort when problems cannot be solved in the "recommended manner". In the case of Home Assistant, be sure you cannot achieve your goal within the GUI before using a heavy handed approach like this. In the specific example of Frigate, many options can be changed from the Home Assistant integration without changing frigate.yaml and restarting Frigate.
 
 ## License
 
