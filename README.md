@@ -88,7 +88,7 @@ objects:
 3. The block tagged with `<home>` is the opposite, activated only when you're "home". In this case:
    - When home, **`cell phone`** and **`wine glass`** are tracked.
    
-This approach allows you to dynamically adjust tracking, filters, zones, camera settings...(anything you can think of), enhancing both functionality and maintainability without having to manually edit the configuration each time or manage multiple versions of the configuration file.
+This approach allows you to dynamically adjust tracking, filters, zones, camera settings...(anything you can think of), enhancing both functionality and maintainability without having to manually edit the configuration each time or maintain multiple versions of the configuration file.
 
 ## Usage
 
@@ -248,9 +248,9 @@ You can add comments within blocks that will be preserved regardless of the togg
 ### Important Notes
 
 - **Case Sensitivity**: The block markers are case-sensitive. For example, `#<away>` is not the same as `#<Away>`.
-- **Spacing Requirement**: The script requires a space after the `#` for it to properly toggle comments. If the space is missing (`#-person`), the script will not uncomment the line. Additionally, no spaces are allowed after the tag.
+- **Spacing Requirement**: The script requires a space after the `#` for it to properly toggle comments. If the space is missing (`#max_ratio: 1`), the script will not uncomment the line. Additionally, no spaces or other characters are allowed before or after the tag. (`# <away>`) won't work. (`#<away> `) will not be found either and can be very difficult to spot...trust me.
 - **No nesting**: Tags within tags are not supported. They will be treated as hard comments and will not be toggled. Create a separate toggle block for each tag.
-- **Testing**: It is recommended to copy your target file to a temporary file for testing, 'test.yaml', for example. Always use `show` to verify that your tags and toggle block are being correctly identified before toggling `on`.
+- **Testing**: It is recommended to copy your target file to a temporary file for testing, 'test.yaml', for example. Always use `show` to verify that your tags and toggle block are being correctly identified before toggling `on`. Use the Developer tools and/or terminal to fully debug before incorporating your toggle block into an automation, where exit errors are reported as "Action run successfully".
 - **Multiplicity**: You can use the same tags in multiple places within a file to keep code maintenance simple. You can use multiple different tags in a file and they can be toggled independently.
 - **Backups**: Remember to switch backup to `off` or `no_backup` once you have completed testing and remove any test or .bak files that you no longer need.
 - **Last Resort**: This script should be used as a last resort when problems cannot be solved in the "recommended manner". In the case of Home Assistant, be sure you cannot achieve your goal within the GUI before using a heavy handed approach like this. In the specific example of Frigate, many options can be changed from the Home Assistant integration without changing frigate.yaml and restarting Frigate.
