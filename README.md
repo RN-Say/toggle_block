@@ -126,8 +126,10 @@ You can add comments within blocks that will be preserved regardless of the togg
 
 - **Case Sensitivity**: The block markers are case-sensitive. For example, `#<away>` is not the same as `#<Away>`.
 - **Spacing Requirement**: The script requires a space after the `#` for it to properly toggle comments. If the space is missing (`#-person`), the script will not uncomment the line.
-- **Testing**: It is recommended to copy your target file to a temporary file for testing, 'test.yaml', for example.
-- **Multiplicity**: You can use the same tags in as many places as you need to within a file to keep code maintenance simple. You can use multiple different tags in a file that can be toggled independently.
+- **No nesting**: Tags within tags are not supported. They will be treated as hard comments and will not be toggled. Create a separate toggle block for each tag.
+- **Testing**: It is recommended to copy your target file to a temporary file for testing, 'test.yaml', for example. Always use `show` to verify that your tags and toggle block are being correctly identified before toggling `on`.
+- **Multiplicity**: You can use the same tags in multiple places within a file to keep code maintenance simple. You can use multiple different tags in a file and they can be toggled independently.
+- **Backups**: Remember to switch backup to `off` or `no_backup` once you have completed testing and remove any test or .bak files that you no longer need.
 
 ## License
 
