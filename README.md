@@ -1,6 +1,6 @@
 # Toggle Block Script for Home Assistant
 
-This script allows you to easily toggle blocks of code in your Home Assistant and Linux configuration files by surrounding them with HTML-like tags. It is especially useful for enabling or disabling sections of your configuration based on specific conditions, such as the state of a group or device. Toggle block improves code maintenance by eliminating the need to maintain multiple configuration files in parallel. 
+This script allows you to easily toggle sections of your Home Assistant and Linux configuration files by surrounding them with HTML-like tags. It is especially useful for enabling or disabling sections of your configuration based on specific conditions, such as the state of a group or device. Toggle block improves code maintenance by improving visibility and eliminating the need to maintain multiple configuration files in parallel. 
 
 ## Installation
 
@@ -23,26 +23,72 @@ This script allows you to easily toggle blocks of code in your Home Assistant an
 
 5. Under Developer tools>ACTIONS you will have a new action: `Shell Command: toggle_block`
 
-## Parameters
+## Example: Toggling blocks in `frigate.yaml`
 
-The script accepts four parameters in the following order:
+This example demonstrates how the script can toggle blocks in your `frigate.yaml` configuration file. The script allows you to activate or deactivate specific sections based on conditions (e.g., whether you're home or away).
 
-1. **target_block** (Required): The name of the block you want to toggle. Blocks that need toggling should be surrounded by case-sensitive HTML-like tags.
-   - Example: `#<away>` and `#</away>`.
+<table>
+  <tr>
+    <th>When Home</th>
+    <th>When Away</th>
+  </tr>
+  <tr>
+    <td>
+       
+```yaml
+objects:
+  track:
+    -cat
+    #<away>
+    # - person
+    # - umbrella
+    #</away>
+    #<home>
+    - cell phone
+    - wine glass
+    #</home>
+  filters:
+    #<away>
+    # person:
+      # max_ratio: 1
+      # min_area: 100000
+    #</away>
+```
+</td>
+<td>
+   
+```yaml
+objects:
+  track:
+    -cat
+    #<away>
+    - person
+    - umbrella
+    #</away>
+    #<home>
+    # - cell phone
+    # - wine glass
+    #</home>
+  filters:
+    #<away>
+    person:
+      max_ratio: 1
+      min_area: 100000
+    #</away>
+```
+</td>
+</tr> </table>
 
-2. **toggle_state** (Required): The desired state of the block, either `on`, `off` or `show`.
-   - `on` will uncomment the block.
-   - `off` will comment the block.
-   - `show` will display the block without making changes.
+### How it works:
 
-3. **target_file** (Required): The YAML file where the block is located. If a file name is provided without a path, the script assumes it is in the `/config` directory.
-   - Example: `frigate.yaml` will be treated as `/config/frigate.yaml`.
-
-4. **backup** (Optional): Specifies whether to create a backup of the file. Accepts:
-   - `on` or `backup`: Creates a `.bak` file.
-   - `off` or `no_backup`: Skips backup creation.
-   - Backup creation is skipped for toggle_state `show`
-   - If not provided for toggle_state `on` or `off`, defaults to creating a backup.
+1. `cat` is **always** tracked, regardless of the state.
+2. The block tagged with `<away>` is active when you're marked as "away" (uncommented) and deactivated when you're "home" (commented). In this case:
+   - When away, **`person`** and **`umbrella`** are tracked.
+   - Additional filters, such as `max_ratio` and `min_area`, are applied to `person` when away.
+3. The block tagged with `<home>` is the opposite, activated only when you're "home". In this case:
+   - When home, **`cell phone`** and **`wine glass`** are tracked.
+   
+This approach allows you to dynamically adjust tracking and filters based on your location, enhancing both functionality and maintainability without having to manually edit the configuration each time.
 
 ## Usage
 
@@ -54,13 +100,18 @@ You can use the script directly from the terminal by passing the parameters in t
    /bin/bash /config/scripts/toggle_block.sh <target_block> <toggle_state> <target_file> <backup>
   ```
 
-#### Example Command
+#### Command Line Examples
 
-To toggle the `away` block `on` in `frigate.yaml` with a `backup`:
+1. To `show` the `away` block(s) in `frigate.yaml`:
+   ```bash
+   /bin/bash /config/scripts/toggle_block.sh "away" "show" "frigate.yaml"
+   ```
 
-  ```bash
+2. To toggle the `away` block(s) `on` in `frigate.yaml` with a `backup`:
+
+   ```bash
    /bin/bash /config/scripts/toggle_block.sh "away" "on" "frigate.yaml" "backup"
-  ```
+   ```
 
 ### From Home Assistant Automations
 
@@ -110,6 +161,26 @@ action:
       addon: ccab4aaf_frigate
 mode: single
 ```
+
+## Parameters
+
+The script accepts four parameters in the following order:
+
+1. **target_block** (Required): The name of the block you want to toggle. Blocks that need toggling should be surrounded by case-sensitive HTML-like tags.
+   - Example: `#<away>` and `#</away>`.
+
+2. **toggle_state** (Required): The desired state of the block, either `on`, `off` or `show`.
+   - `on` will uncomment the block.
+   - `off` will comment the block.
+   - `show` will display the block without making changes.
+
+3. **target_file** (Required): The YAML file where the block is located. If a file name is provided without a path, the script assumes it is in the `/config` directory.
+   - Example: `frigate.yaml` will be treated as `/config/frigate.yaml`.
+
+4. **backup** (Optional): Determines if a backup `.bak` file will be created.
+   - `on` or `backup`: Creates a `.bak` file (default).
+   - `off` or `no_backup`: Skips backup creation.
+   - Note: Backup is skipped automatically for the `show` state.
 
 ### Hard Comments
 
