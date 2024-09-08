@@ -88,7 +88,7 @@ objects:
 3. The block tagged with `<home>` is the opposite, activated only when you're "home". In this case:
    - When home, **`cell phone`** and **`wine glass`** are tracked.
    
-This approach allows you to dynamically adjust tracking, filters, zones, camera settings...(anything you can think of), enhancing both functionality and maintainability without having to manually edit the configuration each time.
+This approach allows you to dynamically adjust tracking, filters, zones, camera settings...(anything you can think of), enhancing both functionality and maintainability without having to manually edit the configuration each time or manage multiple versions of the configuration file.
 
 ## Usage
 
