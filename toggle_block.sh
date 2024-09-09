@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
-# Version: 1.0.0
+# Version: 1.0.1
 #
 # Script for toggling sections of configuration files by surrounding them with HTML-like tags.
 
@@ -27,9 +27,12 @@ toggle_state="$2"
 target_file="$3"
 backup="${4:-on}"  # Default to 'on' if not provided
 
-# Check if a full path is provided for target_file, otherwise default to /config
+# Variables
+default_directory="/config/" # Default directory for Home Assistant. Change as needed.
+
+# Check if a full path is provided for target_file, otherwise use default_directory
 if [[ "$target_file" != /* ]]; then
-    target_file="/config/$target_file"
+    target_file="${default_directory}${target_file}"
 fi
 
 # Check if YAML file exists
