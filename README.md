@@ -234,9 +234,26 @@ The script accepts four parameters in the following order:
    - `off` or `no_backup`: Skips backup creation.
    - Note: Backup is skipped automatically for the `show` state.
 
+### Spacing Requirements: *(It's all about that space!)*
+
+1. **Space after the `#` for toggle blocks**:  
+   When toggling comments, the script requires a space after the `#` for it to function properly.  
+   - Example: `# max_ratio: 1` will work.  
+   - However, `#max_ratio: 1` (without the space) will **not** uncomment the line.
+
+2. **Spacing in tags**:  
+   Spaces are only allowed before the `#` in tags.
+   - Incorrect: `# <away>`
+   - Incorrect: `#<away> ` — can be difficult to spot.
+   - Incorrect: `#<away toggle>`
+
+3. **No content after the tag**:  
+   There should be nothing after the closing tag.
+   - Incorrect: `#<away_toggle> # This is my comment`
+
 ### Hard Comments
 
-You can add comments within blocks that will be preserved regardless of the toggle state by removing the space after the `#`. These are called **hard comments** and will not be affected by the script:
+You can add comments within toggle blocks that will be preserved regardless of the toggle state by removing the space after the `#`. These are called **hard comments** and will not be affected by the script:
 
 ```yaml
 #<away>
@@ -248,11 +265,11 @@ You can add comments within blocks that will be preserved regardless of the togg
 ### Important Notes
 
 - **Case Sensitivity**: The block markers are case-sensitive. For example, `#<away>` is not the same as `#<Away>`.
-- **Spacing Requirement**: The script requires a space after the `#` for it to properly toggle comments. If the space is missing (`#max_ratio: 1`), the script will not uncomment the line. Additionally, no spaces or other characters are allowed before or after the tag. (`# <away>`) won't work. (`#<away> `) will not be found either and can be very difficult to spot...trust me.
 - **No nesting**: Tags within tags are not supported. They will be treated as hard comments and will not be toggled. Create a separate toggle block for each tag.
-- **Testing**: It is recommended to copy your target file to a temporary file for testing, 'test.yaml', for example. Always use `show` to verify that your tags and toggle block are being correctly identified before toggling `on`. Use the Developer tools and/or terminal to fully debug before incorporating your toggle block into an automation, where exit errors are reported as "Action run successfully".
-- **Multiplicity**: You can use the same tags in multiple places within a file to keep code maintenance simple. You can use multiple different tags in a file and they can be toggled independently.
-- **Backups**: Remember to switch backup to `off` or `no_backup` once you have completed testing and remove any test or .bak files that you no longer need.
+- **Multiplicity**: You can use the same tags in multiple places within a file to keep code maintenance simple. You can use many different tags in a file and they can all be toggled independently.
+- **Testing**: It is recommended to copy your target file to a temporary file for testing, 'test.yaml', for example. Always use `show` to verify that your tags and toggle block are being correctly identified before toggling. Use the Home Assistant Developer tools and/or terminal to fully debug before incorporating your toggle block into an automation, where exit errors are often reported as "Action run successfully".
+- **More Testing**: Your file still has to be a valid file after all the toggling. If you toggle off a section of the file that is required, and don't toggle on a replacement, you can easily leave the configuration in a non-working state.
+- **Backups**: Remember to switch backup to `off` or `no_backup` once you have completed testing and remove any test or .bak files that you no longer need to prevent directory clutter.
 - **Last Resort**: This script should be used as a last resort when problems cannot be solved in the "recommended manner". In the case of Home Assistant, be sure you cannot achieve your goal within the GUI before using a heavy handed approach like this. In the specific example of Frigate, many options can be changed from the Home Assistant integration without changing frigate.yaml and restarting Frigate.
 
 ## License
