@@ -38,7 +38,7 @@ This example demonstrates how the script can toggle blocks in your `frigate.yaml
 ```yaml
 objects:
   track:
-    -cat
+    - cat
     #<away>
     # - person
     # - umbrella
@@ -60,7 +60,7 @@ objects:
 ```yaml
 objects:
   track:
-    -cat
+    - cat
     #<away>
     - person
     - umbrella
