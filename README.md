@@ -170,7 +170,7 @@ trigger:
   - platform: state
     entity_id:
       - group.residents
-    to: away
+    to: not_home
     id: Residents Away
   - platform: state
     entity_id:
@@ -202,6 +202,12 @@ action:
             id:
               - Residents Home
         sequence:
+          - action: shell_command.toggle_block
+            data:
+              target_block: home
+              toggle_state: "on"
+              target_file: frigate.yaml
+              backup: "on"   
           - action: shell_command.toggle_block
             data:
               target_block: away
