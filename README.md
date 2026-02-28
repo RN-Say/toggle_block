@@ -23,9 +23,9 @@ This script allows you to easily toggle sections of your Home Assistant and Linu
 
 5. Under Developer tools>ACTIONS you will have a new action: `Shell Command: toggle_block`
 
-## Example: Toggling blocks in `frigate.yaml`
+## Example: Toggling blocks in Frigate's `config.yaml`
 
-This example demonstrates how the script can toggle blocks in your `frigate.yaml` configuration file. The script allows you to activate or deactivate specific sections based on conditions (e.g., whether you're home or away).
+This example demonstrates how the script can toggle blocks in your `config.yaml` configuration file. The script allows you to activate or deactivate specific sections based on conditions (e.g., whether you're home or away).
 
 <table>
   <tr>
@@ -104,13 +104,13 @@ You can use the script directly from the terminal by passing the parameters in t
 
 1. To `show` the `away` block(s) in `frigate.yaml`:
    ```bash
-   /bin/bash /config/scripts/toggle_block.sh "away" "show" "frigate.yaml"
+   /bin/bash /config/scripts/toggle_block.sh "away" "show" "config.yaml"
    ```
 
-2. To toggle the `away` block(s) `on` in `frigate.yaml` with a `backup`:
+2. To toggle the `away` block(s) `on` in `config.yaml` with a `backup`:
 
    ```bash
-   /bin/bash /config/scripts/toggle_block.sh "away" "on" "frigate.yaml" "backup"
+   /bin/bash /config/scripts/toggle_block.sh "away" "on" "config.yaml" "backup"
    ```
 ### From Home Assistant Developer Tools
 
@@ -135,7 +135,7 @@ You can use the script directly from the terminal by passing the parameters in t
      data:
        target_block: home
        toggle_state: "off"
-       target_file: frigate.yaml
+       target_file: config.yaml
        backup: "on"
       ```
 
@@ -147,7 +147,7 @@ You can use the script directly from the terminal by passing the parameters in t
 
       ```yaml
      stdout: |-
-       Backup created: /config/frigate.yaml.bak
+       Backup created: /config/config.yaml.bak
        The block 'home' has been commented.
               #<home>
               # - cell phone
@@ -189,13 +189,13 @@ action:
             data:
               target_block: home
               toggle_state: "off"
-              target_file: frigate.yaml
+              target_file: /addon_configs/ccab4aaf_frigate/config.yaml
               backup: "on"
           - action: shell_command.toggle_block
             data:
               target_block: away
               toggle_state: "on"
-              target_file: frigate.yaml
+              target_file: /addon_configs/ccab4aaf_frigate/config.yaml
               backup: "on"
       - conditions:
           - condition: trigger
@@ -206,13 +206,13 @@ action:
             data:
               target_block: home
               toggle_state: "on"
-              target_file: frigate.yaml
+              target_file: /addon_configs/ccab4aaf_frigate/config.yaml
               backup: "on"   
           - action: shell_command.toggle_block
             data:
               target_block: away
               toggle_state: "off"
-              target_file: frigate.yaml
+              target_file: /addon_configs/ccab4aaf_frigate/config.yaml
               backup: "on"
   - action: hassio.addon_start
     data:
@@ -234,6 +234,7 @@ The script accepts four parameters in the following order:
 
 3. **target_file** (Required): The YAML file where the block is located. If a file name is provided without a path, the script assumes it is in the `/config` directory.
    - Example: `frigate.yaml` will be treated as `/config/frigate.yaml`.
+   - Example for files outside /config: `/addon_configs/ccab4aaf_frigate/config.yaml` 
 
 4. **backup** (Optional): Determines if a backup `.bak` file will be created.
    - `on` or `backup`: Creates a `.bak` file (default).
